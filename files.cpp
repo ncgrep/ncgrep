@@ -11,7 +11,6 @@ vector<string> listdir(string dirname, int lvl)
     int i;
     DIR* d_fh;
     struct dirent* entry;
-    string longest_name;
     vector<string> result;
 
     while( (d_fh = opendir(dirname.c_str())) == NULL) {
@@ -20,8 +19,6 @@ vector<string> listdir(string dirname, int lvl)
     }
 
     while((entry=readdir(d_fh)) != NULL) {
-
-
         /* Don't descend up the tree or include the current directory */
         if(strncmp(entry->d_name, "..", 2) != 0 &&
                 strncmp(entry->d_name, ".", 1) != 0) {
@@ -34,11 +31,9 @@ vector<string> listdir(string dirname, int lvl)
                 //cout<<entry->d_name<<"(d)"<<endl;
 
                 /* Prepend the current directory and recurse */
-                longest_name = longest_name + dirname + "/" + entry->d_name;
-                vector<string> tmp = listdir(longest_name, lvl+1);
+                vector<string> tmp = listdir(dirname + "/" + entry->d_name, lvl+1);
                 result.insert(result.end(), tmp.begin(), tmp.end());
-            }
-            else {
+            } else {
                 char *ext_ch = strrchr(entry->d_name, '.'); 
                 string ext;
                 if (ext_ch) {
@@ -51,9 +46,10 @@ vector<string> listdir(string dirname, int lvl)
                     //cout<<" ";
                 }
 
-                if (ext.compare(".cpp") == 0 || ext.compare(".h") == 0 || ext.compare(".c") == 0 || ext.compare(".php") == 0)
-                    result.push_back(longest_name + dirname + "/" + entry->d_name);
-                //cout<<entry->d_name<<endl;
+                if (ext.compare(".cpp") == 0 || ext.compare(".h") == 0 || ext.compare(".c") == 0 || ext.compare(".php") == 0) {
+                    result.push_back(dirname + "/" + entry->d_name);
+                }
+                //cout<<dirname<<"/"<<entry->d_name<<endl;
             }
         }
     }
