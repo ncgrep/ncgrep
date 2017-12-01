@@ -22,7 +22,7 @@ int main(int argc, char ** argv)
         mfv.insert(mfv.end(), tmp.begin(), tmp.end());
     }
     /*
-    for (int j = 0; j < mfv.size(); ++j) {
+    for (unsigned long j = 0; j < mfv.size(); ++j) {
         cout<<"filename:"<<mfv[j].filename<<endl;
         cout<<"line:"<<mfv[j].line<<endl;
         cout<<"content:"<<mfv[j].content<<endl<<endl;
@@ -47,11 +47,13 @@ int main(int argc, char ** argv)
     box(win, 0, 0);
 
     // print line to win
-    for (unsigned long i = 0; i < yWin - 2; ++i) {
+    int maxLine = (yWin - 2) < mfv.size() ? yWin - 2 : mfv.size();
+    for (int i = 0; i < maxLine; ++i) {
         int line = i + 1;
         if (curLine == line) {
             wattron(win, A_REVERSE);
         }
+        // @TODO repalce the tab to 4 space chars
         string text(mfv[i].filename + " " + to_string(mfv[i].line) + " " + mfv[i].content.substr(0, xWin));
         string space;
         if (text.length() > xWin - 2) {
