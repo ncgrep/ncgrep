@@ -24,7 +24,6 @@ vector<match_files> match_pattern(string file, string parttern)
         in.getline(buffer, 1024);
         tmp.assign(buffer);
         if (tmp.find(parttern) != tmp.npos) {
-            //cout<<buffer<<" at line "<<line<<endl;
             match_files mf;
             mf.line = line;
             mf.filename = file;
