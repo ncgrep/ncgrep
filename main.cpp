@@ -54,7 +54,7 @@ int main(int argc, char ** argv)
             wattron(win, A_REVERSE);
         }
         // @TODO repalce the tab to 4 space chars
-        string text(mfv[i].filename + " " + to_string(mfv[i].line) + " " + mfv[i].content.substr(0, xWin));
+        string text(mfv[i].filename + "+" + to_string(mfv[i].line) + " " + mfv[i].content.substr(0, xWin));
         string space;
         if (text.length() > xWin - 2) {
             text = text.substr(0, xWin - 2);
