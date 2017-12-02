@@ -13,9 +13,11 @@
 using namespace std;
 
 void init_screen();
+void listen_keyboard();
 unsigned long yMax, xMax, yWin, xWin;
 unsigned long cur_line = 0;
 WINDOW * win;
+vector<match_files> mfv;
 
 int main(int argc, char ** argv)
 {
@@ -25,7 +27,6 @@ int main(int argc, char ** argv)
     }
 
     // Get data
-    vector<match_files> mfv;
     try {
         mfv = get_data(argv[2], argv[1]);
     } catch (runtime_error &e) {
@@ -40,6 +41,30 @@ int main(int argc, char ** argv)
     refresh_win(win, yWin, xWin, mfv, cur_line);
 
     // Keyboard input
+    listen_keyboard();
+
+    endwin();
+    return 0;
+}
+
+void init_screen()
+{
+    // Ncurses initialization
+    setlocale(LC_ALL,"");
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, true);
+    curs_set(0); // hiden the cursor
+    getmaxyx(stdscr, yMax, xMax);
+    yWin = long(yMax * 0.6);
+    xWin = long(xMax * 0.8);
+    win = newwin(yWin, xWin, (yMax - yWin) /2, (xMax - xWin) / 2);
+    box(win, 0, 0);
+    refresh();
+}
+
+void listen_keyboard() {
     int c;
     bool do_continue = true;
     while (do_continue && (c = getch())) {
@@ -69,26 +94,13 @@ int main(int argc, char ** argv)
                 }
                 refresh_win(win, yWin, xWin, mfv, ++cur_line);
                 break;
+            case 'o':
+                string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
+                system(cmd.c_str());
+                endwin();
+                init_screen();
+                refresh_win(win, yWin, xWin, mfv, cur_line);
+                break;
         }
     }
-
-    endwin();
-    return 0;
-}
-
-void init_screen()
-{
-    // Ncurses initialization
-    setlocale(LC_ALL,"");
-    initscr();
-    cbreak();
-    noecho();
-    keypad(stdscr, true);
-    curs_set(0); // hiden the cursor
-    getmaxyx(stdscr, yMax, xMax);
-    yWin = long(yMax * 0.6);
-    xWin = long(xMax * 0.8);
-    win = newwin(yWin, xWin, (yMax - yWin) /2, (xMax - xWin) / 2);
-    box(win, 0, 0);
-    refresh();
 }
