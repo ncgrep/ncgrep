@@ -8,12 +8,16 @@
 
 using namespace std;
 
+void refresh_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vector<match_files> mfv, unsigned long cur_line);
+
 int main(int argc, char ** argv)
 {
     if (argc != 3) {
         cerr<<"Incorrect usage! grepx match_pattern file_path"<<endl;
         return -1;
     }
+
+    // Get data
     vector<string> files = listdir(argv[2], 0);
     vector<match_files> mfv, tmp;
     for (unsigned long i = 0; i < files.size(); ++i) {
@@ -35,6 +39,7 @@ int main(int argc, char ** argv)
     return 0;
     */
 
+    // Ncurses initialization
     setlocale(LC_ALL,"");
     initscr();
     cbreak();
@@ -42,20 +47,51 @@ int main(int argc, char ** argv)
     keypad(stdscr, true);
     curs_set(0); // hiden the cursor
 
+    // Print window
     unsigned long yMax, xMax, yWin, xWin;
-    int curLine = 1;
+    unsigned long cur_line = 0;
     getmaxyx(stdscr, yMax, xMax);
-    yWin = int(yMax * 0.6);
-    xWin = int(xMax * 0.8);
+    yWin = long(yMax * 0.6);
+    xWin = long(xMax * 0.8);
     WINDOW * win = newwin(yWin, xWin, (yMax - yWin) /2, (xMax - xWin) / 2);
     refresh();
     box(win, 0, 0);
+    refresh_win(win, yWin, xWin, mfv, cur_line);
 
-    // print line to win
-    int maxLine = (yWin - 2) < mfv.size() ? yWin - 2 : mfv.size();
-    for (int i = 0; i < maxLine; ++i) {
-        int line = i + 1;
-        if (curLine == line) {
+    // Keyboard input
+    int c;
+    bool do_continue = true;
+    while (do_continue && (c = getch())) {
+        switch (*keyname(c)) {
+            case 'q':
+                do_continue = false;
+                break;
+        }
+        switch (c) {
+            case KEY_UP:
+                --cur_line;
+                refresh_win(win, yWin, xWin, mfv, cur_line);
+                break;
+            case KEY_DOWN:
+                ++cur_line;
+                refresh_win(win, yWin, xWin, mfv, cur_line);
+                break;
+            case KEY_LEFT:
+                break;
+            case KEY_RIGHT:
+                break;
+        }
+    }
+
+    endwin();
+    return 0;
+}
+
+void refresh_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vector<match_files> mfv, unsigned long cur_line) {
+    unsigned long max_line = (yWin - 2) < mfv.size() ? yWin - 2 : mfv.size();
+    unsigned long start_line = cur_line < (max_line / 2) ? 0 : cur_line - max_line / 2;
+    for (unsigned long i = start_line; i < max_line + start_line; ++i) {
+        if (cur_line == i) {
             wattron(win, A_REVERSE);
         }
         // @TODO repalce the tab to 4 space chars
@@ -66,22 +102,11 @@ int main(int argc, char ** argv)
         } else if(text.length() < xWin - 2) {
             space = string(xWin - text.length() - 2, ' ');
         }
-        mvwprintw(win, line, 1, (text + space).c_str());
-        if (curLine == line) {
+        mvwprintw(win, i - start_line + 1, 1, (text + space).c_str());
+        if (cur_line == i) {
             wattroff(win, A_REVERSE);
         }
     }
     wrefresh(win);
-
-    int c;
-    bool do_continue = true;
-    while (do_continue && (c = getch())) {
-        switch (*keyname(c)) {
-            case 'q':
-                do_continue = false;
-                break;
-        }
-    }
-
-    endwin();
+    return;
 }
