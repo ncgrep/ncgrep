@@ -18,8 +18,13 @@ int main(int argc, char ** argv)
     vector<match_files> mfv, tmp;
     for (unsigned long i = 0; i < files.size(); ++i) {
         //cout<<files[i]<<endl;
-        tmp = match_pattern(files[i], argv[1]);
-        mfv.insert(mfv.end(), tmp.begin(), tmp.end());
+        try {
+            tmp = match_pattern(files[i], argv[1]);
+            mfv.insert(mfv.end(), tmp.begin(), tmp.end());
+        } catch (runtime_error &e) {
+            cerr<<e.what()<<endl;
+            return 1;
+        }
     }
     /*
     for (unsigned long j = 0; j < mfv.size(); ++j) {
@@ -39,9 +44,9 @@ int main(int argc, char ** argv)
 
     unsigned long yMax, xMax, yWin, xWin;
     int curLine = 1;
-    yWin = 20;
-    xWin = 100;
     getmaxyx(stdscr, yMax, xMax);
+    yWin = int(yMax * 0.6);
+    xWin = int(xMax * 0.8);
     WINDOW * win = newwin(yWin, xWin, (yMax - yWin) /2, (xMax - xWin) / 2);
     refresh();
     box(win, 0, 0);
