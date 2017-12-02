@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <unistd.h>
 
 #include "files.h"
 #include "grep.h"
