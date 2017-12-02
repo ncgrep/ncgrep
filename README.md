@@ -6,11 +6,14 @@ GREPX, based text-ui(ncurses), is focused on searching text in project.
 
 # Usages
 
-```
-grepx "length()" . // . stands for the current dirname
+```shell
+# `.` character stands for the current dirname
+grepx "length()" .
 ```
 
 After entering the interactive interface, the commands are illustrated as followed:
  - q quit
  - j down
  - k up
+
+TO BE CONTINUED...
