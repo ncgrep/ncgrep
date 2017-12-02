@@ -69,7 +69,13 @@ int main(int argc, char ** argv)
     wrefresh(win);
 
     int c;
-    while ((c = getch())) {
+    bool do_continue = true;
+    while (do_continue && (c = getch())) {
+        switch (*keyname(c)) {
+            case 'q':
+                do_continue = false;
+                break;
+        }
     }
 
     endwin();
