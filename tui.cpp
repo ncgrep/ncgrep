@@ -27,7 +27,7 @@ void refresh_win(WINDOW *win,
         throw runtime_error("The refresh line param is more than the size of mfv.");
     }
     unsigned long max_line = (yWin - 2) < mfv.size() ? yWin - 3 : mfv.size() - 1;
-    unsigned long tmp_win_cur_line = 0;
+    unsigned long tmp_win_cur_line = win_cur_line;
     if (refresh_line < data_cur_line) {
         // UP
         if (win_cur_line == 0) {
