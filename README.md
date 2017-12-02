@@ -1,2 +1,5 @@
 # grepx
-GREPX is the tool for searching something in project
+GREPX, based text-ui(ncurses), is focused on searching text in project.
+
+# demo
+
