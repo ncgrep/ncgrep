@@ -134,7 +134,7 @@ void dispose_data() {
             }
             // ONE GROUP RESULTS
             refresh_win(win, yWin, xWin, mfv, cur_line);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            //std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     } catch (runtime_error &e) {
         cerr<<e.what()<<endl;
