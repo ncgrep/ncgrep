@@ -54,22 +54,23 @@ vector<match_dirs> getdirs(string dirname, int lvl, int group_lvl)
     match_dirs dir;
     dir.dirname = dirname;
 
-    while( (d_fh = opendir(dirname.c_str())) == NULL) {
-        return result;
+    if ((d_fh = opendir(dirname.c_str())) == NULL) {
+        throw runtime_error("Could not opendir error(" + to_string(errno) + ")");
     }
     if (lvl > group_lvl) {
+        closedir(d_fh);
         return result;
     }
     if (lvl == group_lvl) {
         dir.mode = GET_DIRS_MODE_RECURSIVE;
         result.push_back(dir);
+        closedir(d_fh);
         return result;
     }
     dir.mode = GET_DIRS_MODE_FILE;
     result.push_back(dir);
 
-    while((entry=readdir(d_fh)) != NULL) {
-        /* Don't descend up the tree or include the current directory */
+    while((entry = readdir(d_fh)) != NULL) {
         if(strncmp(entry->d_name, "..", 2) != 0 && strncmp(entry->d_name, ".", 1) != 0) {
             if (entry->d_type == DT_DIR) {
                 vector<match_dirs> result_tmp  = getdirs(dirname + "/" + entry->d_name, lvl+1, group_lvl);
