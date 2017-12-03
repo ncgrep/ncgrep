@@ -1,5 +1,5 @@
 # Ncgrep
-NCGREP, based text-ui(ncurses), is focused on searching text in project.
+NCGREP, which is based on ncurses library to provide user interface, is a grep tool for searching text on target directory.
 
 # Demo
 ![ncgrep demo](https://github.com/GenialX/assets/blob/master/github.com/grepx/ncgrep_demo_4.gif)
