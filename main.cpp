@@ -28,7 +28,7 @@ char *parttern;
 int main(int argc, char ** argv)
 {
     if (argc != 3) {
-        cerr<<"Incorrect usage! grepx match_pattern file_path"<<endl;
+        cerr<<"Incorrect usage! ncgrep match_pattern file_path"<<endl;
         return -1;
     }
     dirname = argv[2];

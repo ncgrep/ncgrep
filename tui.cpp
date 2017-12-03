@@ -50,7 +50,7 @@ void refresh_win(WINDOW *win,
             wattron(win, A_REVERSE);
         }
         string text(mfv[i].filename + " +" + to_string(mfv[i].line) + " " + mfv[i].content.substr(0, xWin));
-        if (GREPX_TUI_WIN_SHOW_NUM == 1) {
+        if (NCGREP_TUI_WIN_SHOW_NUM == 1) {
             text = to_string(i + 1) + " " + text;
         }
         string space;
