@@ -5,8 +5,8 @@
 
 #include "grep.h"
 
-#ifndef GREPX_TUI_WIN_SHOW_NUM
-#define GREPX_TUI_WIN_SHOW_NUM 1
+#ifndef NCGREP_TUI_WIN_SHOW_NUM
+#define NCGREP_TUI_WIN_SHOW_NUM 1
 #endif
 
 using namespace std;
