@@ -13,5 +13,6 @@ struct match_files
 };
 
 vector<match_files> match_pattern(string file, string pattern) ;
+string replace_all_distinct(string str, const string old_value, const string new_value);
 
 #endif
