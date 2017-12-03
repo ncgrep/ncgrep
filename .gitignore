@@ -1,6 +1,6 @@
 *.o
 main
-grepx
+ncgrep
 .*
 t.cpp
 t
