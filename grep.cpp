@@ -8,8 +8,8 @@
 
 using namespace std;
 
-vector<match_files> match_pattern(string file, string parttern) 
-{ 
+vector<match_files> match_pattern(string file, string parttern)
+{
     int line_max_byte = 102400, line = 0;
     int lastgetp = -2; // the default get position in file is `-1`, in order to distingguish to assign -2
     char buffer[line_max_byte];
@@ -31,6 +31,11 @@ vector<match_files> match_pattern(string file, string parttern)
         }
         tmp.assign(buffer);
         if (tmp.find(parttern) != tmp.npos) {
+            // replace special chars
+            tmp = replace_all_distinct(tmp, "	", "    "); // tab -> 4 spaces
+            //On Windows, the EOL sequence is ^M^J (CRLF, or '\r\n').
+            //On Linux it is just ^J (a single LF, or '\n').
+            tmp = replace_all_distinct(tmp, "\r", ""); // \r -> ''
             match_files mf;
             mf.line = line;
             mf.filename = file;
@@ -41,4 +46,16 @@ vector<match_files> match_pattern(string file, string parttern)
     in.close();
 
     return mfv;
-} 
+}
+
+string replace_all_distinct(string  str, const string old_value, const string new_value)
+{
+    for (string::size_type pos(0); pos != string::npos; pos += new_value.length()) {
+        if ((pos = str.find(old_value, pos)) != string::npos) {
+            str.replace(pos, old_value.length(), new_value);
+        } else {
+            break;
+        }
+    }
+    return str;
+}
