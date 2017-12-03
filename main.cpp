@@ -116,30 +116,34 @@ void listen_keyboard() {
 }
 
 void dispose_data() {
-    try {
         print_status_line("loadding...");
         vector<match_dirs> dirs;
         vector<string> files_tmp;
         vector<match_files> mfv_tmp;
         dirs = getdirs(dirname, 0, group_level);
         unsigned long dirs_count = dirs.size();
+        unsigned long files_count;
         // FOR GROUPs
         for (unsigned long i = 0; i < dirs_count; ++i) {
             print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
             files_tmp = listdir(dirs[i].dirname, group_level, dirs[i].mode);
             // FOR FILEs
-            for (unsigned long i = 0; i < files_tmp.size(); ++i) {
-                mfv_tmp = match_pattern(files_tmp[i], parttern);
-                mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
+            files_count = files_tmp.size();
+            for (unsigned long j = 0; j < files_count; ++j) {
+                print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... sub process "
+                        + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%...");
+                try {
+                    mfv_tmp = match_pattern(files_tmp[j], parttern);
+                    mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
+                } catch (runtime_error &e) {
+                    continue;
+                }
             }
             // ONE GROUP RESULTS
             refresh_win(win, yWin, xWin, mfv, cur_line);
             //std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-    } catch (runtime_error &e) {
-        cerr<<e.what()<<endl;
-        return;
-    }
+
     return;
 }
 
