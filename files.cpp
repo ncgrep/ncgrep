@@ -10,13 +10,11 @@ using namespace std;
 
 vector<string> listdir(string dirname, int lvl, int mode)
 {
-    int i;
     DIR* d_fh;
     struct dirent* entry;
     vector<string> result;
 
     while ( (d_fh = opendir(dirname.c_str())) == NULL) {
-        cerr<<"Couldn't open directory:"<<dirname<<endl;
         return result;
     }
 
@@ -57,7 +55,6 @@ vector<match_dirs> getdirs(string dirname, int lvl, int group_lvl)
     dir.dirname = dirname;
 
     while( (d_fh = opendir(dirname.c_str())) == NULL) {
-        cerr<<"Couldn't open directory:"<<dirname<<endl;
         return result;
     }
     if (lvl > group_lvl) {
