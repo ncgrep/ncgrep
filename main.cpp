@@ -4,6 +4,8 @@
 #include <vector>
 #include <cstdlib>
 #include <unistd.h>
+#include <thread>
+#include <chrono>
 
 #include "files.h"
 #include "grep.h"
@@ -14,10 +16,14 @@ using namespace std;
 
 void init_screen();
 void listen_keyboard();
+void dispose_data();
+void print_status_line(string msg);
 unsigned long yMax, xMax, yWin, xWin;
 unsigned long cur_line = 0;
 WINDOW * win;
 vector<match_files> mfv;
+char *dirname;
+char *parttern;
 
 int main(int argc, char ** argv)
 {
@@ -25,14 +31,8 @@ int main(int argc, char ** argv)
         cerr<<"Incorrect usage! grepx match_pattern file_path"<<endl;
         return -1;
     }
-
-    // Get data
-    try {
-        mfv = get_data(argv[2], argv[1]);
-    } catch (runtime_error &e) {
-        cerr<<e.what()<<endl;
-        return 1;
-    }
+    dirname = argv[2];
+    parttern = argv[1];
 
     // Init screen
     init_screen();
@@ -40,9 +40,13 @@ int main(int argc, char ** argv)
     // Print window
     refresh_win(win, yWin, xWin, mfv, cur_line);
 
+    // Dispose data
+    thread sub_thread(dispose_data);
+
     // Keyboard input
     listen_keyboard();
 
+    sub_thread.join();
     endwin();
     return 0;
 }
@@ -103,4 +107,37 @@ void listen_keyboard() {
                 break;
         }
     }
+}
+
+void dispose_data() {
+    try {
+        print_status_line("loadding...");
+        vector<match_dirs> dirs;
+        vector<string> files_tmp;
+        vector<match_files> mfv_tmp;
+        dirs = getdirs(dirname, 0, 1);
+        unsigned long dirs_count = dirs.size();
+        // FOR GROUPs
+        for (unsigned long i = 0; i < dirs_count; ++i) {
+            print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
+            files_tmp = listdir(dirs[i].dirname, 0, dirs[i].mode);
+            // FOR FILEs
+            for (unsigned long i = 0; i < files_tmp.size(); ++i) {
+                mfv_tmp = match_pattern(files_tmp[i], parttern);
+                mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
+            }
+            // ONE GROUP RESULTS
+            refresh_win(win, yWin, xWin, mfv, cur_line);
+        }
+    } catch (runtime_error &e) {
+        cerr<<e.what()<<endl;
+        return;
+    }
+    return;
+}
+
+void print_status_line(string msg) {
+    mvprintw(yMax - 1, 0, msg.c_str());
+    refresh();
+    return;
 }
