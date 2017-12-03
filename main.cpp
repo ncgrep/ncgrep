@@ -119,7 +119,12 @@ void dispose_data() {
         vector<match_dirs> dirs;
         vector<string> files_tmp;
         vector<match_files> mfv_tmp;
-        dirs = getdirs(dirname, 0, group_level);
+        try {
+            dirs = getdirs(dirname, 0, group_level);
+        } catch (runtime_error &e) {
+            cerr<<e.what()<<endl;
+            return;
+        }
         unsigned long dirs_count = dirs.size();
         unsigned long files_count;
         // FOR GROUPs
