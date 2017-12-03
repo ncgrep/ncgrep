@@ -2,6 +2,6 @@
 main
 grepx
 .*
-grepx.dSYM
 t.cpp
 t
+*.dSYM
