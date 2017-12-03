@@ -121,7 +121,7 @@ void dispose_data() {
         vector<match_dirs> dirs;
         vector<string> files_tmp;
         vector<match_files> mfv_tmp;
-        dirs = getdirs(dirname, 0, 1);
+        dirs = getdirs(dirname, 0, group_level);
         unsigned long dirs_count = dirs.size();
         // FOR GROUPs
         for (unsigned long i = 0; i < dirs_count; ++i) {
@@ -134,6 +134,7 @@ void dispose_data() {
             }
             // ONE GROUP RESULTS
             refresh_win(win, yWin, xWin, mfv, cur_line);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     } catch (runtime_error &e) {
         cerr<<e.what()<<endl;
