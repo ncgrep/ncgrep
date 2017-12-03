@@ -49,8 +49,7 @@ void refresh_win(WINDOW *win,
         if (i - start_line == tmp_win_cur_line) {
             wattron(win, A_REVERSE);
         }
-        // @TODO repalce the tab to 4 space chars
-        string text(mfv[i].filename + "+" + to_string(mfv[i].line) + " " + mfv[i].content.substr(0, xWin));
+        string text(mfv[i].filename + " +" + to_string(mfv[i].line) + " " + mfv[i].content.substr(0, xWin));
         if (GREPX_TUI_WIN_SHOW_NUM == 1) {
             text = to_string(i + 1) + " " + text;
         }
