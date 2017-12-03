@@ -24,15 +24,21 @@ WINDOW * win;
 vector<match_files> mfv;
 char *dirname;
 char *parttern;
+int group_level;
 
 int main(int argc, char ** argv)
 {
     if (argc != 3) {
-        cerr<<"Incorrect usage! ncgrep match_pattern file_path"<<endl;
+        cerr<<"Incorrect usage! ncgrep match_pattern file_path [search_group_level]"<<endl;
         return -1;
     }
     dirname = argv[2];
     parttern = argv[1];
+    if (argc == 4) {
+        group_level = atoi(argv[3]);
+    } else {
+        group_level = 1;
+    }
 
     // Init screen
     init_screen();
@@ -120,7 +126,7 @@ void dispose_data() {
         // FOR GROUPs
         for (unsigned long i = 0; i < dirs_count; ++i) {
             print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
-            files_tmp = listdir(dirs[i].dirname, 0, dirs[i].mode);
+            files_tmp = listdir(dirs[i].dirname, group_level, dirs[i].mode);
             // FOR FILEs
             for (unsigned long i = 0; i < files_tmp.size(); ++i) {
                 mfv_tmp = match_pattern(files_tmp[i], parttern);
