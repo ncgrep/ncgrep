@@ -7,10 +7,11 @@ NCGREP, based text-ui(ncurses), is focused on searching text in project.
 # Usages
 
 ```shell
-# `.` character stands for the current dirname
-# `3` It represents the level of search directory grouping, the three level directory as a group for text search
 ncgrep "grep" . 3
 ```
+
+ - `.` character stands for the current dirname
+ - `3` It represents the level of search directory grouping, the three level directory as a group for text search
 
 After entering the interactive interface, the commands are illustrated as followed:
  - `q` quit
