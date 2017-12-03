@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <thread>
-#include <chrono>
 
 #include "files.h"
 #include "grep.h"
@@ -131,7 +130,7 @@ void dispose_data() {
             files_count = files_tmp.size();
             for (unsigned long j = 0; j < files_count; ++j) {
                 print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... "
-                        + "sub process" + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%... "
+                        + "sub process " + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%... "
                         + dirs[i].dirname);
                 try {
                     mfv_tmp = match_pattern(files_tmp[j], parttern);
@@ -142,7 +141,6 @@ void dispose_data() {
             }
             // ONE GROUP RESULTS
             refresh_win(win, yWin, xWin, mfv, cur_line);
-            //std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
 
     return;
