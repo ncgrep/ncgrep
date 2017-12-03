@@ -130,8 +130,9 @@ void dispose_data() {
             // FOR FILEs
             files_count = files_tmp.size();
             for (unsigned long j = 0; j < files_count; ++j) {
-                print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... sub process "
-                        + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%...");
+                print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... "
+                        + "sub process" + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%... "
+                        + dirs[i].dirname);
                 try {
                     mfv_tmp = match_pattern(files_tmp[j], parttern);
                     mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
