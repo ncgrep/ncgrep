@@ -14,6 +14,8 @@ struct match_dirs
 {
     int mode;
     string dirname;
+    unsigned long start;
+    unsigned long length;
 };
 
 vector<string> listdir(string dirname, int lvl, int mode);
