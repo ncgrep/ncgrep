@@ -25,7 +25,10 @@ After entering the interactive interface, the commands are illustrated as follow
 
 Firstly, you should install the dependency library:
 ```shell
+# MAC
 brew install ncurses
+# CentOS
+yum install ncurses
 ```
 
 Then, compile & link:
