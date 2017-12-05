@@ -95,7 +95,7 @@ void listen_keyboard() {
                 if (cur_dir_index == -1) {
                     cur_dir_index = cur_line;
                     cur_line = used_dirs[cur_dir_index].start;
-                    print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + " cur line:" + to_string(cur_line) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " mfv size:" + to_string(mfv.size()));
+                    print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()));
                     refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 } else {
                     string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
@@ -164,15 +164,17 @@ void dispose_data() {
         unsigned long files_count;
         // FOR GROUPs
         for (unsigned long i = 0; i < dirs_count; ++i) {
-            print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
+            //print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
             files_tmp = listdir(dirs[i].dirname, group_level, dirs[i].mode);
             // FOR FILEs
             files_count = files_tmp.size();
             dirs[i].start = mfv.size();
             for (unsigned long j = 0; j < files_count; ++j) {
+                /*
                 print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... "
                         + "sub process " + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%... "
                         + dirs[i].dirname);
+                        */
                 try {
                     mfv_tmp = match_pattern(files_tmp[j], parttern);
                     mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
