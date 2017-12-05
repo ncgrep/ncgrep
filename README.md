@@ -21,4 +21,20 @@ After entering the interactive interface, the commands are illustrated as follow
  - `KEY_ENTER` open file in vim
  - `CTRL-e` return to the group interface
 
+# Install
+
+Firstly, you should install the dependency library:
+```shell
+brew install ncurses
+```
+
+Then, compile & link:
+```shell
+g++ -c files.cpp -o files.o
+g++ -c grep.cpp -o grep.o
+g++ -c tui.cpp -o tui.o
+g++ -c data.cpp -o data.o
+g++ -g main.cpp -o ncgrep files.o grep.o tui.o data.o -lncurses
+```
+
 TO BE CONTINUED...
