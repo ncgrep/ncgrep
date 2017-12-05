@@ -26,6 +26,7 @@ vector<match_dirs> dirs, used_dirs;
 char *dirname;
 char *parttern;
 int group_level;
+bool do_moving = false;
 
 int main(int argc, char ** argv)
 {
@@ -115,16 +116,22 @@ void listen_keyboard() {
                 do_continue = false;
                 break;
             case 'k':
+                do_moving = true;
                 if (cur_line == min) {
+                    do_moving = false;
                     break;
                 }
                 refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, --cur_line);
+                do_moving = false;
                 break;
             case 'j':
+                do_moving = true;
                 if (cur_line == max) {
+                    do_moving = false;
                     break;
                 }
                 refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, ++cur_line);
+                do_moving = false;
                 break;
             case 'o':
                 if (cur_dir_index == -1) {
@@ -187,8 +194,11 @@ void dispose_data() {
             }
             // ONE GROUP RESULTS
             if (cur_dir_index == -1) {
+                while (do_moving == true) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                }
                 refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
         print_status_line("loaded");
