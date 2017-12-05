@@ -22,7 +22,7 @@ unsigned long cur_line = 0;
 long cur_dir_index = -1;
 WINDOW * win;
 vector<match_files> mfv;
-vector<match_dirs> dirs;
+vector<match_dirs> dirs, used_dirs;
 char *dirname;
 char *parttern;
 int group_level;
@@ -45,7 +45,7 @@ int main(int argc, char ** argv)
     init_screen();
 
     // Print window
-    refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
 
     // Dispose data
     thread sub_thread(dispose_data);
@@ -81,38 +81,38 @@ void listen_keyboard() {
     while (do_continue && (c = getch())) {
         switch (c) {
             case 5: // ctrl-e
-                //cout<<"cur_dir_index:"<<cur_dir_index<<" cur dir size:"<<dirs[cur_dir_index].length<<"cur dir start:"<<dirs[cur_dir_index].start<<endl;
+                //cout<<"cur_dir_index:"<<cur_dir_index<<" cur dir size:"<<used_dirs[cur_dir_index].length<<"cur dir start:"<<used_dirs[cur_dir_index].start<<endl;
                 if (cur_dir_index == -1) {
                     break;
                 }
                 cur_dir_index = -1;
                 cur_line = 0;
-                refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 break;
             case 10:
-                if (dirs[cur_dir_index].length == 0) {
+                if (used_dirs[cur_dir_index].length == 0) {
                     break;
                 }
                 if (cur_dir_index == -1) {
                     cur_dir_index = cur_line;
-                    cur_line = dirs[cur_dir_index].start;
-                    print_status_line(to_string(cur_dir_index) + " cur line:" + to_string(cur_line) + "cur dir size:" + to_string(dirs[cur_dir_index].length) + " mfv size:" + to_string(mfv.size()));
-                    refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+                    cur_line = used_dirs[cur_dir_index].start;
+                    print_status_line(to_string(cur_dir_index) + " cur line:" + to_string(cur_line) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " mfv size:" + to_string(mfv.size()));
+                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 } else {
                     string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
                     system(cmd.c_str());
                     endwin();
                     init_screen();
-                    refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 }
                 break;
         }
 
         unsigned long min = 0;
-        unsigned long max = dirs.size() - 1;
+        unsigned long max = used_dirs.size() == 0 ? 0 : used_dirs.size() - 1;
         if (cur_dir_index != -1) {
-            min = dirs[cur_dir_index].start;
-            max = dirs[cur_dir_index].start + dirs[cur_dir_index].length - 1;
+            min = used_dirs[cur_dir_index].start;
+            max = used_dirs[cur_dir_index].start + used_dirs[cur_dir_index].length == 0 ? 0 : used_dirs[cur_dir_index].start + used_dirs[cur_dir_index].length - 1;
         }
         switch (*keyname(c)) {
             case 'q':
@@ -122,29 +122,29 @@ void listen_keyboard() {
                 if (cur_line == min) {
                     break;
                 }
-                refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, --cur_line);
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, --cur_line);
                 break;
             case 'j':
-                if (cur_line == max || dirs[cur_dir_index].length == 0) {
+                if (cur_line == max) {
                     break;
                 }
-                refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, ++cur_line);
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, ++cur_line);
                 break;
             case 'o':
-                if (dirs[cur_dir_index].length == 0) {
+                if (used_dirs[cur_dir_index].length == 0) {
                     break;
                 }
                 if (cur_dir_index == -1) {
                     cur_dir_index = cur_line;
-                    cur_line = dirs[cur_dir_index].start;
-                    print_status_line(to_string(cur_dir_index) + " cur line:" + to_string(cur_line) + "cur dir size:" + to_string(dirs[cur_dir_index].length) + " mfv size:" + to_string(mfv.size()));
-                    refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+                    cur_line = used_dirs[cur_dir_index].start;
+                    print_status_line(to_string(cur_dir_index) + " cur line:" + to_string(cur_line) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " mfv size:" + to_string(mfv.size()));
+                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 } else {
                     string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
                     system(cmd.c_str());
                     endwin();
                     init_screen();
-                    refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 }
                 break;
         }
@@ -183,8 +183,16 @@ void dispose_data() {
             }
             dirs[i].length = mfv.size() - dirs[i].start;
             dirs[i].start == 0 ? 0 : --dirs[i].start;
+            if (dirs[i].length > 0) {
+                match_dirs md;
+                md.dirname = dirs[i].dirname;
+                md.start = dirs[i].start;
+                md.length = dirs[i].length;
+                used_dirs.push_back(md);
+            }
             // ONE GROUP RESULTS
-            refresh_win(win, yWin, xWin, dirs, cur_dir_index, mfv, cur_line);
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
 
     return;
