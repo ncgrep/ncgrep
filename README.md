@@ -19,5 +19,6 @@ After entering the interactive interface, the commands are illustrated as follow
  - `k` up
  - `o` open file in vim
  - `KEY_ENTER` open file in vim
+ - `CTRL-e` return to the group interface
 
 TO BE CONTINUED...
