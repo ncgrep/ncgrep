@@ -36,6 +36,7 @@ vector<match_files> match_pattern(string file, string parttern)
             //On Windows, the EOL sequence is ^M^J (CRLF, or '\r\n').
             //On Linux it is just ^J (a single LF, or '\n').
             tmp = replace_all_distinct(tmp, "\r", ""); // \r -> ''
+            tmp = replace_all_distinct(tmp, "%", "%%"); // \r -> ''
             match_files mf;
             mf.line = line;
             mf.filename = file;
