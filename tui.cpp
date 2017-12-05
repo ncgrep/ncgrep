@@ -10,7 +10,7 @@ using namespace std;
 
 unsigned long win_cur_line = 0;
 unsigned long data_cur_line = 0;
-long group_cur_index = 0;
+long last_cur_dir_index = 0;
 /**
  * @brief refresh the specific line data to the windown.
  * @param WEINDOW *win
@@ -41,10 +41,10 @@ void refresh_win(WINDOW *win,
         throw runtime_error("The refresh line param is less than the start of current group mfv.");
     }
     unsigned long max_line = (yWin - 2) < dirs[cur_dir_index].length ? yWin - 3 : dirs[cur_dir_index].length - 1;
-    if (group_cur_index != cur_dir_index) {
+    if (last_cur_dir_index != cur_dir_index) {
         win_cur_line = 0;
         data_cur_line = 0;
-        group_cur_index = cur_dir_index;
+        last_cur_dir_index = cur_dir_index;
     }
     unsigned long tmp_win_cur_line = win_cur_line;
     if (refresh_line < data_cur_line) {
@@ -99,10 +99,10 @@ void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vecto
         throw runtime_error("The refresh line param is more than the length of dirs.");
     }
     unsigned long max_line = (yWin - 2) < dirs.size() ? yWin - 3 : dirs.size() - 1;
-    if (group_cur_index != cur_dir_index) {
+    if (last_cur_dir_index != cur_dir_index) {
         win_cur_line = 0;
         data_cur_line = 0;
-        group_cur_index = cur_dir_index;
+        last_cur_dir_index = cur_dir_index;
     }
     unsigned long tmp_win_cur_line = win_cur_line;
     if (refresh_line < data_cur_line) {
