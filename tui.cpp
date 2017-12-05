@@ -43,8 +43,7 @@ void refresh_win(WINDOW *win,
     unsigned long max_line = (yWin - 2) < dirs[cur_dir_index].length ? yWin - 3 : dirs[cur_dir_index].length - 1;
     if (last_cur_dir_index != cur_dir_index) {
         win_cur_line = 0;
-        data_cur_line = 0;
-        last_cur_dir_index = cur_dir_index;
+        data_cur_line = refresh_line;
     }
     unsigned long tmp_win_cur_line = win_cur_line;
     if (refresh_line < data_cur_line) {
@@ -89,6 +88,7 @@ void refresh_win(WINDOW *win,
     wrefresh(win);
     data_cur_line = refresh_line;
     win_cur_line = tmp_win_cur_line;
+    last_cur_dir_index = cur_dir_index;
     return;
 }
 
@@ -102,7 +102,6 @@ void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vecto
     if (last_cur_dir_index != cur_dir_index) {
         win_cur_line = 0;
         data_cur_line = 0;
-        last_cur_dir_index = cur_dir_index;
     }
     unsigned long tmp_win_cur_line = win_cur_line;
     if (refresh_line < data_cur_line) {
@@ -147,6 +146,7 @@ void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vecto
     wrefresh(win);
     data_cur_line = refresh_line;
     win_cur_line = tmp_win_cur_line;
+    last_cur_dir_index = cur_dir_index;
     return;
     return;
 }
