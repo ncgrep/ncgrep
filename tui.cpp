@@ -61,7 +61,7 @@ void refresh_win(WINDOW *win,
             tmp_win_cur_line = ++win_cur_line;
         }
     }
-    unsigned long start_line = refresh_line <= tmp_win_cur_line ? 0 : refresh_line - tmp_win_cur_line + 1;
+    unsigned long start_line = refresh_line <= tmp_win_cur_line ? 0 : refresh_line - tmp_win_cur_line;
 
     for (unsigned long i = start_line; i < max_line + start_line + 1; ++i) {
         if (i - start_line == tmp_win_cur_line) {
@@ -119,7 +119,7 @@ void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vecto
             tmp_win_cur_line = ++win_cur_line;
         }
     }
-    unsigned long start_line = refresh_line <= tmp_win_cur_line ? 0 : refresh_line - tmp_win_cur_line + 1;
+    unsigned long start_line = refresh_line <= tmp_win_cur_line ? 0 : refresh_line - tmp_win_cur_line;
 
     for (unsigned long i = start_line; i < max_line + start_line + 1; ++i) {
         if (i - start_line == tmp_win_cur_line) {
