@@ -137,7 +137,7 @@ void listen_keyboard() {
                 if (cur_dir_index == -1) {
                     cur_dir_index = cur_line;
                     cur_line = used_dirs[cur_dir_index].start;
-                    print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()));
+                    //print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()));
                     refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
                 } else {
                     string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
