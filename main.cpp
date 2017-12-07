@@ -200,7 +200,7 @@ void dispose_data() {
                 //std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
-        print_status_line("loaded");
+        print_status_line("loaded     ");
 
     return;
 }
