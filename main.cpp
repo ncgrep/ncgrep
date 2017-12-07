@@ -76,33 +76,48 @@ void init_screen()
     refresh();
 }
 
+const int CMD_NOOP  = 0;
+const int CMD_OPEN  = 1;
+const int CMD_GROUP = 2;
+const int CMD_UP    = 3;
+const int CMD_DOWN  = 4;
+const int CMD_QUIT  = 5;
+
 void listen_keyboard() {
     int c;
+    int command = CMD_NOOP;
+
     bool do_continue = true;
     while (do_continue && (c = getch())) {
+        // Get current key pressed.
+        // Slightly complicate because of different handling of control keys and "standard" keys.
         switch (c) {
-            case 5: // ctrl-e
-                if (cur_dir_index == -1) {
-                    break;
-                }
-                cur_dir_index = -1;
-                cur_line = 0;
-                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                break;
-            case 10:
-                if (cur_dir_index == -1) {
-                    cur_dir_index = cur_line;
-                    cur_line = used_dirs[cur_dir_index].start;
-                    //print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()) + " mfv start line:" + mfv[cur_line].filename);
-                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                } else {
-                    string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
-                    system(cmd.c_str());
-                    endwin();
-                    init_screen();
-                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                }
-                break;
+        case 5: // ctrl-e
+            command = CMD_GROUP;
+            break;
+        case 10:
+            command = CMD_OPEN;
+            break;
+        case KEY_UP:
+            command = CMD_UP;
+            break;
+        case KEY_DOWN:
+            command = CMD_DOWN;
+            break;
+        }
+        switch (*keyname(c)) {
+        case 'q':
+            command = CMD_QUIT;
+            break;
+        case 'k':
+            command = CMD_UP;
+            break;
+        case 'j':
+            command = CMD_DOWN;
+            break;
+        case 'o':
+            command = CMD_OPEN;
+            break;
         }
 
         unsigned long min = 0;
@@ -111,96 +126,104 @@ void listen_keyboard() {
             min = used_dirs[cur_dir_index].start;
             max = used_dirs[cur_dir_index].start + used_dirs[cur_dir_index].length == 0 ? 0 : used_dirs[cur_dir_index].start + used_dirs[cur_dir_index].length - 1;
         }
-        switch (*keyname(c)) {
-            case 'q':
-                do_continue = false;
-                break;
-            case 'k':
-                do_moving = true;
-                if (cur_line == min) {
-                    do_moving = false;
-                    break;
-                }
-                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, --cur_line);
+        switch (command) {
+        case CMD_QUIT:
+            do_continue = false;
+            break;
+        case CMD_UP:
+            do_moving = true;
+            if (cur_line == min) {
                 do_moving = false;
                 break;
-            case 'j':
-                do_moving = true;
-                if (cur_line == max) {
-                    do_moving = false;
-                    break;
-                }
-                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, ++cur_line);
+            }
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, --cur_line);
+            do_moving = false;
+            break;
+        case CMD_DOWN:
+            do_moving = true;
+            if (cur_line == max) {
                 do_moving = false;
                 break;
-            case 'o':
-                if (cur_dir_index == -1) {
-                    cur_dir_index = cur_line;
-                    cur_line = used_dirs[cur_dir_index].start;
-                    //print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()));
-                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                } else {
-                    string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
-                    system(cmd.c_str());
-                    endwin();
-                    init_screen();
-                    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                }
+            }
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, ++cur_line);
+            do_moving = false;
+            break;
+        case CMD_OPEN:
+            if (cur_dir_index == -1) {
+                cur_dir_index = cur_line;
+                cur_line = used_dirs[cur_dir_index].start;
+                //print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()));
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            } else {
+                string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
+                system(cmd.c_str());
+                endwin();
+                init_screen();
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            }
+            break;
+        case CMD_GROUP:
+            if (cur_dir_index == -1) {
                 break;
+            }
+            cur_dir_index = -1;
+            cur_line = 0;
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            break;
         }
     }
 }
 
 void dispose_data() {
-        print_status_line("loadding...");
-        vector<string> files_tmp;
-        vector<match_files> mfv_tmp;
-        try {
-            dirs = getdirs(dirname, 0, group_level);
-        } catch (runtime_error &e) {
-            cerr<<e.what()<<endl;
-            return;
-        }
-        unsigned long dirs_count = dirs.size();
-        unsigned long files_count;
-        // FOR GROUPs
-        for (unsigned long i = 0; i < dirs_count; ++i) {
-            //print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
-            files_tmp = listdir(dirs[i].dirname, group_level, dirs[i].mode);
-            // FOR FILEs
-            files_count = files_tmp.size();
-            dirs[i].start = mfv.size();
-            for (unsigned long j = 0; j < files_count; ++j) {
-                /*
-                print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... "
-                        + "sub process " + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%... "
-                        + dirs[i].dirname);
-                        */
-                try {
-                    mfv_tmp = match_pattern(files_tmp[j], parttern);
-                    mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
-                } catch (runtime_error &e) {
-                    continue;
-                }
-            }
-            dirs[i].length = mfv.size() - dirs[i].start;
-            if (dirs[i].length > 0) {
-                match_dirs md;
-                md.dirname = dirs[i].dirname;
-                md.start = dirs[i].start;
-                md.length = dirs[i].length;
-                used_dirs.push_back(md);
-            }
-            // ONE GROUP RESULTS
-            if (cur_dir_index == -1) {
-                while (do_moving == true) {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-                }
-                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
-                //std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    print_status_line("loadding...");
+    vector<string> files_tmp;
+    vector<match_files> mfv_tmp;
+    try {
+        dirs = getdirs(dirname, 0, group_level);
+    } catch (runtime_error &e) {
+        cerr<<e.what()<<endl;
+        return;
+    }
+    unsigned long dirs_count = dirs.size();
+    unsigned long files_count;
+    // FOR GROUPs
+    for (unsigned long i = 0; i < dirs_count; ++i) {
+        //print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%...");
+        files_tmp = listdir(dirs[i].dirname, group_level, dirs[i].mode);
+        // FOR FILEs
+        files_count = files_tmp.size();
+        dirs[i].start = mfv.size();
+        for (unsigned long j = 0; j < files_count; ++j) {
+            /*
+            print_status_line("loadding " + to_string(int(((i * 1.0 + 1) / dirs_count) * 100)) + "%%... "
+                    + "sub process " + to_string(int(((j * 1.0 + 1) / files_count) * 100)) + "%%... "
+                    + dirs[i].dirname);
+                    */
+            try {
+                mfv_tmp = match_pattern(files_tmp[j], parttern);
+                mfv.insert(mfv.end(), mfv_tmp.begin(), mfv_tmp.end());
+            } catch (runtime_error &e) {
+                continue;
             }
         }
-        print_status_line("loaded     ");
+        dirs[i].length = mfv.size() - dirs[i].start;
+        if (dirs[i].length > 0) {
+            match_dirs md;
+            md.dirname = dirs[i].dirname;
+            md.start = dirs[i].start;
+            md.length = dirs[i].length;
+            used_dirs.push_back(md);
+        }
+        // ONE GROUP RESULTS
+        if (cur_dir_index == -1) {
+            while (do_moving == true) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            }
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            //std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+    print_status_line("loaded     ");
 
     return;
 }
