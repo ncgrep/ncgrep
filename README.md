@@ -30,7 +30,7 @@ Firstly, you should install the dependency library:
 # MAC
 brew install ncurses
 # CentOS
-yum install ncurses
+sudo yum install ncurses ncurses-devel
 ```
 
 Then, compile & link:
