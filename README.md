@@ -2,7 +2,7 @@
 NCGREP, which is based on ncurses library to provide user interface, is a grep tool for searching text on target directory.
 
 # Demo
-![ncgrep demo](https://github.com/GenialX/assets/blob/master/github.com/grepx/ncgrep_demo_4.gif)
+![ncgrep demo](https://github.com/GenialX/assets/blob/master/github.com/ncgrep/ncgrep_demo_5.gif)
 
 # Usages
 
