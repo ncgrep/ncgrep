@@ -171,6 +171,7 @@ void listen_keyboard() {
             refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
             break;
         }
+        command = CMD_NOOP;
     }
 }
 
