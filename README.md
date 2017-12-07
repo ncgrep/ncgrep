@@ -35,6 +35,7 @@ sudo yum install ncurses ncurses-devel
 
 Then, compile & link:
 ```shell
+# Just tested on Mac
 g++ -c files.cpp -o files.o
 g++ -c grep.cpp -o grep.o
 g++ -c tui.cpp -o tui.o
