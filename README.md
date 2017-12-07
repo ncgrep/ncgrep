@@ -15,8 +15,10 @@ ncgrep "grep" . 3
 
 After entering the interactive interface, the commands are illustrated as followed:
  - `q` quit
+ - `KEY_DOWN` down
  - `j` down
  - `k` up
+ - `KEY_UP` up
  - `o` open file in vim
  - `KEY_ENTER` open file in vim
  - `CTRL-e` return to the group interface
