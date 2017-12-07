@@ -14,14 +14,14 @@ ncgrep "grep" . 3
  - `3` It represents the level of search directory grouping, the three level directory as a group for text search
 
 After entering the interactive interface, the commands are illustrated as followed:
- - `q` quit
- - `KEY_DOWN` down
- - `j` down
- - `k` up
- - `KEY_UP` up
- - `o` open file in vim
+ - `KEY_UP`    up
+ - `KEY_DOWN`  down
  - `KEY_ENTER` open file in vim
- - `CTRL-e` return to the group interface
+ - `q`         quit
+ - `k`         up
+ - `j`         down
+ - `o`         open file in vim
+ - `CTRL-e`    return to the group interface
 
 # Install
 
