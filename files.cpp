@@ -21,7 +21,6 @@ vector<string> listdir(string dirname, int lvl, int mode)
     while ((entry=readdir(d_fh)) != NULL) {
         /* Don't descend up the tree or include the current directory */
         if(strncmp(entry->d_name, "..", 2) != 0 && strncmp(entry->d_name, ".", 1) != 0) {
-            /* If it's a directory print it's name and recurse into it */
             if (entry->d_type == DT_DIR && mode == GET_DIRS_MODE_RECURSIVE) {
                 /* Prepend the current directory and recurse */
                 vector<string> tmp = listdir(dirname + "/" + entry->d_name, lvl+1, GET_DIRS_MODE_RECURSIVE);
@@ -34,7 +33,6 @@ vector<string> listdir(string dirname, int lvl, int mode)
                     ext = filename.substr(ext_ch - entry->d_name, filename.length() - (ext_ch - entry->d_name));
                 }
 
-                /* Print some leading space depending on the directory level */
                 if (ext.compare(".cpp") == 0 || ext.compare(".h") == 0 || ext.compare(".c") == 0 || ext.compare(".php") == 0) {
                     result.push_back(dirname + "/" + entry->d_name);
                 }
