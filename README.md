@@ -35,12 +35,8 @@ sudo yum install ncurses ncurses-devel
 
 Then, compile & link:
 ```shell
-# Just tested on Mac
-g++ -c files.cpp -o files.o
-g++ -c grep.cpp -o grep.o
-g++ -c tui.cpp -o tui.o
-g++ -c data.cpp -o data.o
-g++ -g main.cpp -o ncgrep files.o grep.o tui.o data.o -lncurses
+# Just tested on Mac and Ubuntu
+make
 ```
 
 TO BE CONTINUED...
