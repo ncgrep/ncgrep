@@ -24,10 +24,11 @@ void refresh_win(WINDOW *win,
         vector<match_dirs> dirs,
         long cur_dir_index,
         vector<match_files> mfv, 
-        unsigned long refresh_line)
+        unsigned long refresh_line,
+        bool do_move_win_line)
 {
     if (cur_dir_index == -1) {
-        refresh_dirs_win(win, yWin, xWin, dirs, cur_dir_index, refresh_line);
+        refresh_dirs_win(win, yWin, xWin, dirs, cur_dir_index, refresh_line, do_move_win_line);
         return;
     }
     if (dirs[cur_dir_index].length == 0) {
@@ -46,19 +47,21 @@ void refresh_win(WINDOW *win,
         data_cur_line = refresh_line;
     }
     unsigned long tmp_win_cur_line = win_cur_line;
-    if (refresh_line < data_cur_line) {
-        // UP
-        if (win_cur_line == 0) {
-            tmp_win_cur_line = 0;
-        } else {
-            tmp_win_cur_line = win_cur_line == 0 ?  0 : --win_cur_line;
-        }
-    } else if (refresh_line > data_cur_line) {
-        // DOWN
-        if (win_cur_line == max_line) {
-            tmp_win_cur_line = win_cur_line;
-        } else {
-            tmp_win_cur_line = ++win_cur_line;
+    if (do_move_win_line) {
+        if (refresh_line < data_cur_line) {
+            // UP
+            if (win_cur_line == 0) {
+                tmp_win_cur_line = 0;
+            } else {
+                tmp_win_cur_line = win_cur_line == 0 ?  0 : --win_cur_line;
+            }
+        } else if (refresh_line > data_cur_line) {
+            // DOWN
+            if (win_cur_line == max_line) {
+                tmp_win_cur_line = win_cur_line;
+            } else {
+                tmp_win_cur_line = ++win_cur_line;
+            }
         }
     }
     unsigned long start_line = refresh_line <= tmp_win_cur_line ? 0 : refresh_line - tmp_win_cur_line;
@@ -93,7 +96,7 @@ void refresh_win(WINDOW *win,
 }
 
 
-void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vector<match_dirs> dirs, long cur_dir_index, unsigned long refresh_line)
+void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vector<match_dirs> dirs, long cur_dir_index, unsigned long refresh_line, bool do_move_win_line)
 {
     if (refresh_line > dirs.size() - 1) {
         throw runtime_error("The refresh line param is more than the length of dirs.");
@@ -104,19 +107,21 @@ void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vecto
         data_cur_line = 0;
     }
     unsigned long tmp_win_cur_line = win_cur_line;
-    if (refresh_line < data_cur_line) {
-        // UP
-        if (win_cur_line == 0) {
-            tmp_win_cur_line = 0;
-        } else {
-            tmp_win_cur_line = win_cur_line == 0 ?  0 : --win_cur_line;
-        }
-    } else if (refresh_line > data_cur_line) {
-        // DOWN
-        if (win_cur_line == max_line) {
-            tmp_win_cur_line = win_cur_line;
-        } else {
-            tmp_win_cur_line = ++win_cur_line;
+    if (do_move_win_line) {
+        if (refresh_line < data_cur_line) {
+            // UP
+            if (win_cur_line == 0) {
+                tmp_win_cur_line = 0;
+            } else {
+                tmp_win_cur_line = win_cur_line == 0 ?  0 : --win_cur_line;
+            }
+        } else if (refresh_line > data_cur_line) {
+            // DOWN
+            if (win_cur_line == max_line) {
+                tmp_win_cur_line = win_cur_line;
+            } else {
+                tmp_win_cur_line = ++win_cur_line;
+            }
         }
     }
     unsigned long start_line = refresh_line <= tmp_win_cur_line ? 0 : refresh_line - tmp_win_cur_line;
@@ -162,3 +167,10 @@ void refresh_space_win(WINDOW *win, unsigned long yWin, unsigned long xWin, unsi
     return;
 }
 
+unsigned long get_last_win_cur_line() {
+    return win_cur_line;
+}
+
+void set_last_win_cur_line(unsigned long new_win_cur_line) {
+    win_cur_line = new_win_cur_line;
+}

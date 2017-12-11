@@ -46,7 +46,7 @@ int main(int argc, char ** argv)
     init_screen();
 
     // Print window
-    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+    refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
 
     // Dispose data
     thread sub_thread(dispose_data);
@@ -76,12 +76,14 @@ void init_screen()
     refresh();
 }
 
-const int CMD_NOOP  = 0;
-const int CMD_OPEN  = 1;
-const int CMD_GROUP = 2;
-const int CMD_UP    = 3;
-const int CMD_DOWN  = 4;
-const int CMD_QUIT  = 5;
+const int CMD_NOOP           = 0;
+const int CMD_OPEN           = 1;
+const int CMD_GROUP          = 2;
+const int CMD_UP             = 3;
+const int CMD_DOWN           = 4;
+const int CMD_QUIT           = 5;
+const int CMD_PAGE_HALF_DOWN = 6;
+const int CMD_PAGE_HALF_UP   = 7;
 
 void listen_keyboard() {
     int c;
@@ -92,6 +94,12 @@ void listen_keyboard() {
         // Get current key pressed.
         // Slightly complicate because of different handling of control keys and "standard" keys.
         switch (c) {
+        case 4: // ctrl-d
+            command = CMD_PAGE_HALF_DOWN;
+            break;
+        case 21: // ctrl-u
+            command = CMD_PAGE_HALF_UP;
+            break;
         case 5: // ctrl-e
             command = CMD_GROUP;
             break;
@@ -122,6 +130,8 @@ void listen_keyboard() {
 
         unsigned long min = 0;
         unsigned long max = used_dirs.size() == 0 ? 0 : used_dirs.size() - 1;
+        unsigned long last_win_cur_line = get_last_win_cur_line();
+        unsigned long win_cur_line;
         if (cur_dir_index != -1) {
             min = used_dirs[cur_dir_index].start;
             max = used_dirs[cur_dir_index].start + used_dirs[cur_dir_index].length == 0 ? 0 : used_dirs[cur_dir_index].start + used_dirs[cur_dir_index].length - 1;
@@ -136,7 +146,7 @@ void listen_keyboard() {
                 do_moving = false;
                 break;
             }
-            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, --cur_line);
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, --cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
             do_moving = false;
             break;
         case CMD_DOWN:
@@ -145,21 +155,46 @@ void listen_keyboard() {
                 do_moving = false;
                 break;
             }
-            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, ++cur_line);
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, ++cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
+            do_moving = false;
+            break;
+        case CMD_PAGE_HALF_UP:
+            do_moving = true;
+            if (cur_line == min) {
+                do_moving = false;
+                break;
+            } else {
+                win_cur_line = last_win_cur_line + 1 <= (yWin - 2) / 2 ? 0 : last_win_cur_line - (yWin - 2) / 2;
+                set_last_win_cur_line(win_cur_line);
+                cur_line = cur_line < (yWin - 2) / 2 + min ? min : cur_line - (yWin - 2) / 2;
+            }
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_NOT_MOVE_WIN_LINE);
+            do_moving = false;
+            break;
+        case CMD_PAGE_HALF_DOWN:
+            do_moving = true;
+            if (cur_line == max) {
+                do_moving = false;
+                break;
+            } else {
+                win_cur_line = last_win_cur_line + 1 + (yWin - 2) / 2 > yWin - 2 ? yWin - 3 : last_win_cur_line + (yWin - 2) / 2;
+                set_last_win_cur_line(win_cur_line);
+                cur_line = cur_line + (yWin - 2) / 2 > max ? max : cur_line + (yWin - 2) / 2;
+            }
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_NOT_MOVE_WIN_LINE);
             do_moving = false;
             break;
         case CMD_OPEN:
             if (cur_dir_index == -1) {
                 cur_dir_index = cur_line;
                 cur_line = used_dirs[cur_dir_index].start;
-                //print_status_line("cur_dir_index:" + to_string(cur_dir_index) + "cur dir start:" + to_string(used_dirs[cur_dir_index].start) + "cur dir size:" + to_string(used_dirs[cur_dir_index].length) + " cur line:" + to_string(cur_line) + " mfv size:" + to_string(mfv.size()));
-                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
             } else {
                 string cmd = "vim " + mfv[cur_line].filename + " +" + to_string(mfv[cur_line].line);
                 system(cmd.c_str());
                 endwin();
                 init_screen();
-                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+                refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
             }
             break;
         case CMD_GROUP:
@@ -168,7 +203,7 @@ void listen_keyboard() {
             }
             cur_dir_index = -1;
             cur_line = 0;
-            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
             break;
         }
         command = CMD_NOOP;
@@ -220,7 +255,7 @@ void dispose_data() {
             while (do_moving == true) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
-            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line);
+            refresh_win(win, yWin, xWin, used_dirs, cur_dir_index, mfv, cur_line, NCGREP_TUI_DO_MOVE_WIN_LINE);
             //std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }
