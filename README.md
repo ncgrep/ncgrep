@@ -43,7 +43,7 @@ sudo yum install ncurses ncurses-devel
 
 Then, compile & link:
 ```shell
-# Just tested on Mac and Ubuntu
+# Just tested on Mac and CentOS
 make
 ```
 
