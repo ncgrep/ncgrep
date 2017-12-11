@@ -1,5 +1,7 @@
+#include <stdexcept>
 #include <string>
 #include <sys/types.h>
+#include <cstring>
 #include <dirent.h>
 #include <vector>
 #include <iostream>

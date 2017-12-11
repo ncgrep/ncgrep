@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <ncurses.h>
 #include <string>
 #include <iostream>
