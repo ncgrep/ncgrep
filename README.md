@@ -26,6 +26,8 @@ After entering the interactive interface, the commands are illustrated as follow
  - `q`         quit
  - `k`         up
  - `j`         down
+ - `CTRL-u`    half page up
+ - `CTRL-d`    half page down
  - `o`         open file in vim
  - `CTRL-e`    return to the group interface
 
