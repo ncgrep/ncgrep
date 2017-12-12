@@ -39,11 +39,13 @@ Firstly, you should install the dependency library:
 brew install ncurses
 # CentOS
 sudo yum install ncurses ncurses-devel
+# Ubutun
+sudo apt-get install libncurses5 libncurses5-dev
 ```
 
 Then, compile & link:
 ```shell
-# Just tested on Mac and CentOS
+# Just tested on Mac, CentOS and Ubutun
 make
 ```
 
