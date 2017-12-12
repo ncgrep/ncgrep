@@ -8,8 +8,10 @@ EXECUTABLE=ncgrep
 
 all: $(SOURCES) $(EXECUTABLE)
 
+
+# -lncurses needs to be at end off compilation command
 $(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ -lncurses
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
