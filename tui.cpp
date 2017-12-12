@@ -97,7 +97,13 @@ void refresh_win(WINDOW *win,
 }
 
 
-void refresh_dirs_win(WINDOW *win, unsigned long yWin, unsigned long xWin, vector<match_dirs> dirs, long cur_dir_index, unsigned long refresh_line, bool do_move_win_line)
+void refresh_dirs_win(WINDOW *win,
+        unsigned long yWin,
+        unsigned long xWin,
+        vector<match_dirs> dirs,
+        long cur_dir_index,
+        unsigned long refresh_line,
+        bool do_move_win_line)
 {
     if (refresh_line > dirs.size() - 1) {
         throw runtime_error("The refresh line param is more than the length of dirs.");
