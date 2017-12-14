@@ -7,7 +7,9 @@ NCGREP, which is based on ncurses library to provide user interface, is a grep t
 ![ncgrep demo](https://github.com/GenialX/assets/blob/master/github.com/ncgrep/ncgrep_demo_5.gif)
 
 # Features
- - The matching results are presented in a graphical interface and provide interactivity.
+ - Look for a pattern(just keyword for now) in your source code directory and display results in ncurses.
+ - Browse results with ease.
+ - Open a result with your favorite editor(just vim for now) at the right line.
  - Currently it supports files ending in .php, .h, .c, .cpp suffixes.
 
 # Usages
