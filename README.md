@@ -6,7 +6,7 @@ NCGREP, which is based on ncurses library to provide user interface, is a grep t
 # Demo
 ![ncgrep demo](https://github.com/GenialX/assets/blob/master/github.com/ncgrep/ncgrep_demo_5.gif)
 
-# Feature
+# Features
  - The matching results are presented in a graphical interface and provide interactivity.
  - Currently it supports files ending in .php, .h, .c, .cpp suffixes.
 
@@ -49,4 +49,6 @@ Then, compile & link:
 make
 ```
 
-TO BE CONTINUED...
+# Contact
+
+E-Mail to admin@ihuxu.com
