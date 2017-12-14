@@ -3,7 +3,7 @@ NCGREP, which is based on ncurses library to provide user interface, is a grep t
 
 [![Join the chat at https://gitter.im/ncgrep/Lobby](https://badges.gitter.im/ncgrep/ncgrep.svg)](https://gitter.im/ncgrep/Lobby)
 
-# Demo
+# Example
 ![ncgrep demo](https://github.com/GenialX/assets/blob/master/github.com/ncgrep/ncgrep_demo_5.gif)
 
 # Features
@@ -31,7 +31,7 @@ After entering the interactive interface, the commands are illustrated as follow
  - `o`         open file in vim
  - `CTRL-e`    return to the group interface
 
-# Install
+# Installation
 
 Firstly, you should install the dependency library:
 ```shell
