@@ -10,7 +10,7 @@ NCGREP, which is based on ncurses library to provide user interface, is a grep t
  - Look for a pattern(just keyword for now) in your source code directory and display results in ncurses.
  - Browse results with ease.
  - Open a result with your favorite editor(just vim for now) at the right line.
- - Currently it supports files ending in .php, .h, .c, .cpp suffixes.
+ - Search files which is ended in .php, .h, .c, .cpp suffixes.
 
 # Usages
 
