@@ -35,7 +35,7 @@ vector<string> listdir(string dirname, int lvl, int mode)
                     ext = filename.substr(ext_ch - entry->d_name, filename.length() - (ext_ch - entry->d_name));
                 }
 
-                if (ext.compare(".cpp") == 0 || ext.compare(".h") == 0 || ext.compare(".c") == 0 || ext.compare(".php") == 0) {
+                if (ext.compare(".cpp") == 0 || ext.compare(".h") == 0 || ext.compare(".c") == 0 || ext.compare(".php") == 0 || ext.compare(".py")) {
                     result.push_back(dirname + "/" + entry->d_name);
                 }
             }
