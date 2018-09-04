@@ -31,7 +31,7 @@ bool do_moving = false;
 int main(int argc, char ** argv)
 {
     if (argc < 3) {
-        cerr<<"Incorrect usage! ncgrep match_pattern file_path [search_group_level]"<<endl;
+        cerr<<"Version: 0.0.3_beta\nIncorrect usage! ncgrep match_pattern file_path [search_group_level]"<<endl;
         return -1;
     }
     dirname = argv[2];
